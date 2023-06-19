@@ -1,0 +1,6 @@
+name: TelecomInfo
+version: '${project.version}'
+main: me.kardoskevin07.telecominfo.TelecomInfo
+api-version: 1.19
+load: STARTUP
+depent: [Telecom]
