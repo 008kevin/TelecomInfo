@@ -7,5 +7,5 @@ depend: [Telecom]
 commands:
   listCarriers:
     description: Your description
-    usage: /<command>
+    usage: /<command> [page number]
     permission: yourplugin.yourcommandpermission

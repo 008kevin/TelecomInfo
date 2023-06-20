@@ -2,7 +2,6 @@ package me.kardoskevin07.telecominfo;
 
 import me.kardoskevin07.telecominfo.commands.listCommand;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.dbteku.telecom.api.TelecomApi;
 
 public final class TelecomInfo extends JavaPlugin  {
 
