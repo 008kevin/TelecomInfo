@@ -9,3 +9,7 @@ commands:
     description: Your description
     usage: /<command> [page number]
     permission: yourplugin.yourcommandpermission
+  carrierInfo:
+    description: Your description
+    usage: /<command> [carrier name]
+    permission: yourplugin.yourcommandpermission

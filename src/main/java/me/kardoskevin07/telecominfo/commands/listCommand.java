@@ -4,12 +4,13 @@ import com.dbteku.telecom.api.TelecomApi;
 import com.dbteku.telecom.models.Carrier;
 import me.kardoskevin07.telecominfo.utils.TableGenerator;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class listCommand implements CommandExecutor {
+public class listCommand implements TabExecutor {
 
 
     @Override
@@ -66,8 +67,22 @@ public class listCommand implements CommandExecutor {
                     commandSender.sendMessage(row);
                 }
             }
-
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        List<String> completion = new ArrayList<>();
+
+        switch (strings.length) {
+            case 1:
+                for (int i = 1; i <= (TelecomApi.get().getAllCarriers().size() + 1) / 5; i++) {
+                    completion.add(String.valueOf(i));
+                }
+                return completion;
+        }
+
+        return null;
     }
 }
