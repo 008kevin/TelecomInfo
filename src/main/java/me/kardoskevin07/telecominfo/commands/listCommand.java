@@ -18,7 +18,7 @@ public class listCommand implements TabExecutor {
         List<Carrier> carrierList = TelecomApi.get().getAllCarriers();
 
         int carriersPerPage = 5;
-        int totalPages = (carrierList.size() + 1) / carriersPerPage;
+        int totalPages = (int)Math.ceil(((double)carrierList.size() + 1.0) / (double)carriersPerPage);
         int currentPage;
 
         // Check if input is valid
