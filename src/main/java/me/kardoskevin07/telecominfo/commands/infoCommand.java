@@ -2,9 +2,13 @@ package me.kardoskevin07.telecominfo.commands;
 
 import com.dbteku.telecom.api.TelecomApi;
 import com.dbteku.telecom.models.Carrier;
+import com.dbteku.telecom.models.CellTower;
+import com.dbteku.telecom.models.WorldLocation;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +73,23 @@ public class infoCommand implements TabExecutor {
 
 
                     case "signal":
-                        commandSender.sendMessage("§cNot implemented yet (signal)");
+                        if (commandSender instanceof Player) {
+                            Location location = ((Player) commandSender).getLocation();
+                            WorldLocation worldLocation = new WorldLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(), ((Player) commandSender).getWorld().getName());
+                            if (carrier.getBestTowerBySignalStrength(worldLocation).determineStrength(worldLocation) > 0 && carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation) > 0) {
+                                commandSender.sendMessage("§7Signal information about §c§l" + carrier.getName() + "§7:");
+
+                                commandSender.sendMessage("§r - §cBest by band: §r" + carrier.getBestTowerByBand(worldLocation).getType().getBand().getLabel() + ", " +
+                                        carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation));
+
+                                commandSender.sendMessage("§r - §cBest by signal strength: §r" + carrier.getBestTowerBySignalStrength(worldLocation).getType().getBand().getLabel() + ", " +
+                                        carrier.getBestTowerBySignalStrength(worldLocation).determineStrength(worldLocation));
+                            } else {
+                                commandSender.sendMessage("§cThere are no towers in range for this carrier");
+                            }
+                        } else {
+                            commandSender.sendMessage("§cSorry, this command is only for players");
+                        }
                         break;
 
 
