@@ -1,0 +1,39 @@
+debug: false
+listCommand:
+  itemsPerPage: 5
+
+lang:
+  listCommand:
+    table:
+      header:
+        carrier: "§c§nCarrier name"
+        owner: "§c§nOwner"
+        textPrice: "§c§nText"
+        callPrice: "§c§nCall"
+      data:
+        carrier: "§7${carrier}"
+        owner: "§7${owner}"
+        textPrice: "§7${textPrice}"
+        callPrice: "§7${callPrice}"
+  infoCommand:
+    subscribers:
+      title: "§7Subscribers of §c§l${carrier}§7:"
+      data: "${subscribers}"
+    signal:
+      title: "§7Signal information about §c§l${carrier}§7:"
+      data: "§r - §cBest tower: §r${bestBandTower}, ${bestBandTowerStrength}"
+      towerError: "§cThere are no towers in range for this carrier"
+    general:
+      title: "§7Information about §c§l${carrier}§7:"
+      owner: "§r - §cOwner: §r${owner}"
+      peers: "§r - §cPeers: §r${peers}"
+      textPrice: "§r - §cPrice per text: §r${textPrice}"
+      callPrice: "§r - §cPrice per minute: §r${callPrice}"
+      subscribers: "§r - §cSubscribers: §r${subscriberCount}"
+    price:
+      title: "§7Price information about §c§l${carrier}§7:"
+      textPrice: "§r - §cPrice per text: §r${textPrice}"
+      callPrice: "§r - §cPrice per minute: §r${callPrice}"
+      peers:
+        title: "§r - §cPeers§r:"
+        data: "§r    - §c${peer}§r: Text: §7${peerTextPrice}§r, Minute: §7${peerCallPrice}"
