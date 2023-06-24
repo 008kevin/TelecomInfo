@@ -11,5 +11,5 @@ commands:
     permission: yourplugin.yourcommandpermission
   carrierInfo:
     description: Your description
-    usage: /<command> [carrier name]
+    usage: /<command> [subcommand] [carrier name]
     permission: yourplugin.yourcommandpermission
