@@ -75,9 +75,11 @@ public class PlaceholderParse {
         valuesMap.put("owner", carrier.getOwner());
         valuesMap.put("textPrice", "" + carrier.getPricePerText());
         valuesMap.put("callPrice", "" + carrier.getPricePerMinute());
-        valuesMap.put("bestBandTower", carrier.getBestTowerByBand(worldLocation).getType().getBand().getLabel());
+        // valuesMap.put("bestBandTower", carrier.getBestTowerByBand(worldLocation).getType().getBand().getLabel());
+        valuesMap.put("bestBandTower", carrier.getBestTowerByBand(worldLocation).getType());
         valuesMap.put("bestBandTowerStrength", "" + carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation));
-        valuesMap.put("bestSignalTower", carrier.getBestTowerBySignalStrength(worldLocation).getType().getBand().getLabel());
+        // valuesMap.put("bestSignalTower", carrier.getBestTowerBySignalStrength(worldLocation).getType().getBand().getLabel());
+        valuesMap.put("bestSignalTower", carrier.getBestTowerBySignalStrength(worldLocation).getType());
         valuesMap.put("bestSignalTowerStrength", "" + carrier.getBestTowerBySignalStrength(worldLocation).determineStrength(worldLocation));
 
         StringSubstitutor sub = new StringSubstitutor(valuesMap);
