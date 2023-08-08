@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.dbteku.telecom</groupId>
             <artifactId>com.dbteku.telecom.api</artifactId>
-            <version>1.0.0-beta0.30</version>
+            <version>1.0.0-beta0.31</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/Telecom-Release.jar</systemPath>
         </dependency>
