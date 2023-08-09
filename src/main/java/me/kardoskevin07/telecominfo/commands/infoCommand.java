@@ -4,6 +4,7 @@ import com.dbteku.telecom.api.TelecomApi;
 import com.dbteku.telecom.models.Carrier;
 import com.dbteku.telecom.models.WorldLocation;
 import me.kardoskevin07.telecominfo.TelecomInfo;
+import me.kardoskevin07.telecominfo.models.TowerSignal;
 import me.kardoskevin07.telecominfo.utils.PlaceholderParse;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -74,16 +75,23 @@ public class infoCommand implements TabExecutor {
                         if (debug) logger.info("Signal subcommand");
 
                         if (commandSender instanceof Player) {
+                            // Current location scan
                             Location location = ((Player) commandSender).getLocation();
                             WorldLocation worldLocation = new WorldLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(), ((Player) commandSender).getWorld().getName());
-                            if (carrier.getBestTowerBySignalStrength(worldLocation).determineStrength(worldLocation) > 0 && carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation) > 0) {
-                                if (debug) logger.info("Towers found, sending message");
-                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.title"),carrier,worldLocation));
-                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.data"),carrier,worldLocation));
+                            commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.title"),carrier,worldLocation,false));
+                            if (carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation) > 0.0) {
+                                if (debug) logger.info("Towers found, sending message" + carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation));
+                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.current"),carrier,worldLocation,false));
                             } else {
-                                if (debug) logger.info("No towers found");
+                                if (debug) logger.info("No towers in range");
                                 commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.towerError"),carrier));
                             }
+                            commandSender.sendMessage(parser.parse( config.getString("lang.infoCommand.signal.averageTitle") + "\n" +
+                                                                    config.getString("lang.infoCommand.signal.averageType") + "\n" +
+                                                                    config.getString("lang.infoCommand.signal.averageStrength") + "\n" +
+                                                                    config.getString("lang.infoCommand.signal.coverage"),
+                                                                    carrier,worldLocation, true));
+
                         } else {
                             if (debug) logger.info("CommandSender is not a player");
                             commandSender.sendMessage("§cSorry, this command is only for players");

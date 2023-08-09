@@ -1,6 +1,16 @@
 debug: false
 listCommand:
   itemsPerPage: 5
+infoCommand:
+  signal:
+    scanRadius: 128
+    scansPerRadius: 4
+  towerTypes:
+    - "5G"
+    - "LTE"
+    - "4G"
+    - "3G"
+    - "E"
 
 lang:
   listCommand:
@@ -21,8 +31,13 @@ lang:
       data: "${subscribers}"
     signal:
       title: "§7Signal information about §c§l${carrier}§7:"
-      data: "§r - §cBest tower: §r${bestBandTower}, ${bestBandTowerStrength}"
+      current: "§r - §cCurrent signal: §r${bestBandTower}, ${bestBandTowerStrength}"
+      averageTitle: "§r - §cTower stats in a §r${averageSignalArea} §carea:"
+      averageType: "§r    - §cMost covered by type: §r${averageCellType}"
+      averageStrength: "§r    - §cAverage signal strength: §r${averageSignalStrength}"
+      coverage: "§r    - §cCoverage: §r${coverage}"
       towerError: "§cThere are no towers in range for this carrier"
+      areaError: "§rNo tower in area"
     general:
       title: "§7Information about §c§l${carrier}§7:"
       owner: "§r - §cOwner: §r${owner}"
