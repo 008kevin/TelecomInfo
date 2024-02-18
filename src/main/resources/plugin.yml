@@ -1,7 +1,7 @@
 name: TelecomInfo
 version: '${project.version}'
 main: me.kardoskevin07.telecominfo.TelecomInfo
-api-version: 1.19
+api-version: 1.17
 author: 008kevin
 depend: [Telecom]
 commands:
