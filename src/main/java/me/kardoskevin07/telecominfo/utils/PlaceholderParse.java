@@ -6,16 +6,14 @@ import com.dbteku.telecom.models.WorldLocation;
 import me.kardoskevin07.telecominfo.TelecomInfo;
 import me.kardoskevin07.telecominfo.models.TowerSignal;
 import org.apache.commons.text.StringSubstitutor;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static java.lang.Math.round;
 
 public class PlaceholderParse {
 
@@ -145,14 +143,14 @@ public class PlaceholderParse {
         valuesMap.put("callPrice", "" + carrier.getPricePerMinute());
         // (only before 0.31) valuesMap.put("bestBandTower", carrier.getBestTowerByBand(worldLocation).getType().getBand().getLabel());
         valuesMap.put("bestBandTower", carrier.getBestTowerByBand(Location).getType());
-        valuesMap.put("bestBandTowerStrength", "" + carrier.getBestTowerByBand(Location).determineStrength(Location));
+        valuesMap.put("bestBandTowerStrength", "" + formatSignalStrength(carrier.getBestTowerByBand(Location).determineStrength(Location)));
         // (only before 0.31) valuesMap.put("bestSignalTower", carrier.getBestTowerBySignalStrength(worldLocation).getType().getBand().getLabel());
         valuesMap.put("bestSignalTower", carrier.getBestTowerBySignalStrength(Location).getType());
-        valuesMap.put("bestSignalTowerStrength", "" + carrier.getBestTowerBySignalStrength(Location).determineStrength(Location));
+        valuesMap.put("bestSignalTowerStrength", "" + formatSignalStrength(carrier.getBestTowerBySignalStrength(Location).determineStrength(Location)));
         if (doAreaScan) {
             valuesMap.put("averageSignalArea", scanRadius * 2 + "x" + scanRadius * 2);
             if (coveredAmount > 0) {
-                valuesMap.put("averageSignalStrength", "" + averageSignalStrength);
+                valuesMap.put("averageSignalStrength", "" + formatSignalStrength(averageSignalStrength));
                 valuesMap.put("averageCellType", averageCellType);
                 valuesMap.put("coverage", (float) Math.round(((float) coveredAmount / (float) scanAmount) * 10000) / 100.0 + "%");
             } else {
@@ -187,6 +185,14 @@ public class PlaceholderParse {
         String output = sub.replace(input);
 
         return output;
+    }
+
+    private String formatSignalStrength(double signalStrength) {
+        if (signalStrength < 0.20)  return ChatColor.RED + "⏺○○○○"; else
+        if (signalStrength < 0.40)  return ChatColor.YELLOW + "⏺⏺○○○"; else
+        if (signalStrength < 0.60)  return ChatColor.GREEN + "⏺⏺⏺○○"; else
+        if (signalStrength < 0.80)  return ChatColor.GREEN + "⏺⏺⏺⏺○"; else
+                                    return ChatColor.GREEN + "⏺⏺⏺⏺⏺";
     }
 
 }
