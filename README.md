@@ -1,5 +1,9 @@
 # About
 A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.spigotmc.org/resources/telecom.42914/)
+# Requirements
+- Minecraft 1.17
+- Java 17
+- Telecom (beta 0.31 and higher)
 # Commands
 - `/carrierinfo [subcommand] [carrier name]`
   - general 
