@@ -1,7 +1,7 @@
 # About
 A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.spigotmc.org/resources/telecom.42914/)
 # Requirements
-- Minecraft 1.17
+- Minecraft 1.17 and up
 - Java 17
 - Telecom (beta 0.31 and higher)
 # Commands
@@ -42,10 +42,10 @@ A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.sp
     - peerCallPrice - price per call message of the peer carrier
     - peerSubscribers - number of subscribers of the peer carrier
     - bestBandTower - type of best tower searched by type
-    - bestBandTowerStrength - strenght of best tower searched by type
+    - bestBandTowerStrength - strength of best tower searched by type
     - bestSignalTower - type of best tower searched by signal strength
-    - bestSignalTowerStrength - strenght of best tower searched by signal strength
+    - bestSignalTowerStrength - strength of best tower searched by signal strength
     - averageSignalArea - the size of the area of the signal scan
-    - averageSignalStrength - the average strenght from the scan
+    - averageSignalStrength - the average strength from the scan
     - averageCellType - the most found tower type by the scan
     - coverage - percentage value of the coverage
