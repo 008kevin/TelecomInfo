@@ -19,6 +19,29 @@ public class PlaceholderParse {
     private final boolean debug = mainClass.getConfig().getBoolean("debug");
     private final Logger logger = mainClass.getLogger();
 
+    Carrier carrier;
+    WorldLocation location;
+    AreaScan scan;
+    Carrier peer;
+
+    public PlaceholderParse setCarrier(Carrier carrier) {
+        this.carrier = carrier;
+        return this;
+    }
+    public PlaceholderParse setLocation(WorldLocation location) {
+        this.location = location;
+        return this;
+    }
+    public PlaceholderParse areaScan(int radius, int scansPerRadius) {
+        this.scan = new AreaScan(this.location, this.carrier, radius, scansPerRadius);
+        return this;
+    }
+    public PlaceholderParse setPeer(Carrier peer) {
+        this.peer = peer;
+        return this;
+    }
+
+
     public String parse(String input, Carrier carrier) {
         if (debug) logger.info("Parsing placeholders for carrier " + carrier.getName() + " in string " + input);
 
