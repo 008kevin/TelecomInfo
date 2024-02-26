@@ -4,7 +4,6 @@ import com.dbteku.telecom.api.TelecomApi;
 import com.dbteku.telecom.models.Carrier;
 import com.dbteku.telecom.models.WorldLocation;
 import me.kardoskevin07.telecominfo.TelecomInfo;
-import me.kardoskevin07.telecominfo.models.TowerSignal;
 import me.kardoskevin07.telecominfo.utils.PlaceholderParse;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -23,10 +22,9 @@ public class infoCommand implements TabExecutor {
     private final FileConfiguration config = mainClass.getConfig();
     private final boolean debug = mainClass.getConfig().getBoolean("debug");
     private final Logger logger = mainClass.getLogger();
-    private final PlaceholderParse parser = new PlaceholderParse();
 
 
-    List<String> subCommands = new ArrayList<String>(){{
+    List<String> subCommands = new ArrayList<>() {{
         add("subscribers");
         add("signal");
         add("general");
@@ -44,7 +42,7 @@ public class infoCommand implements TabExecutor {
         } else {
             if (debug) logger.info("Subcommand specified, " + strings[0]);
 
-            if (strings.length > 2 || strings.length < 2 || strings[1] == null) {
+            if (strings.length != 2 || strings[1] == null) {
                 if (debug) logger.info("Carrier not specified, or array is too long");
                 commandSender.sendMessage("§cInvalid input");
                 return false;
@@ -64,66 +62,82 @@ public class infoCommand implements TabExecutor {
                 switch (strings[0]) {
 
 
-                    case "subscribers":
+                    case "subscribers": {
                         if (debug) logger.info("Subscribers subcommand");
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.subscribers.title"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.subscribers.data"),carrier));
+
+                        PlaceholderParse parser = new PlaceholderParse().setCarrier(carrier);
+
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.subscribers.title")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.subscribers.data")));
                         break;
+                    }
 
-
-                    case "signal":
+                    case "signal": {
                         if (debug) logger.info("Signal subcommand");
 
                         if (commandSender instanceof Player) {
                             // Current location scan
                             Location location = ((Player) commandSender).getLocation();
                             WorldLocation worldLocation = new WorldLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(), ((Player) commandSender).getWorld().getName());
-                            commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.title"),carrier,worldLocation,false));
+
+                            int scansPerRadius = config.getInt("infoCommand.signal.scansPerRadius");
+                            int scanRadius = config.getInt("infoCommand.signal.scanRadius");
+                            PlaceholderParse parser = new PlaceholderParse().setCarrier(carrier).setLocation(worldLocation).areaScan(scanRadius, scansPerRadius);
+
+                            commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.title")));
                             if (carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation) > 0.0) {
                                 if (debug) logger.info("Towers found, sending message" + carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation));
-                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.current"),carrier,worldLocation,false));
+                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.current")));
                             } else {
                                 if (debug) logger.info("No towers in range");
-                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.towerError"),carrier));
+                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.towerError")));
                             }
                             commandSender.sendMessage(parser.parse( config.getString("lang.infoCommand.signal.averageTitle") + "\n" +
                                                                     config.getString("lang.infoCommand.signal.averageType") + "\n" +
                                                                     config.getString("lang.infoCommand.signal.averageStrength") + "\n" +
-                                                                    config.getString("lang.infoCommand.signal.coverage"),
-                                                                    carrier,worldLocation, true));
+                                                                    config.getString("lang.infoCommand.signal.coverage")));
 
                         } else {
                             if (debug) logger.info("CommandSender is not a player");
                             commandSender.sendMessage("§cSorry, this command is only for players");
                         }
                         break;
+                    }
 
 
-                    case "general":
+                    case "general": {
                         if (debug) logger.info("General subcommand");
 
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.title"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.owner"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.peers"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.textPrice"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.callPrice"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.subscribers"),carrier));
-                        break;
+                        PlaceholderParse parser = new PlaceholderParse().setCarrier(carrier);
 
-                    case "price":
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.title")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.owner")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.peers")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.textPrice")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.callPrice")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.general.subscribers")));
+                        break;
+                    }
+
+                    case "price": {
                         if (debug) logger.info("Price subcommand");
 
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.title"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.textPrice"),carrier));
-                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.callPrice"),carrier));
-                        if (peers.size() != 0) {
-                            commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.peers.title"),carrier));
-                            for (int i = 0; i < peers.size(); i++) {
-                                Carrier peer = TelecomApi.get().getCarrierById(peers.get(i));
-                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.peers.data"),carrier,peer));
+                        PlaceholderParse parser = new PlaceholderParse().setCarrier(carrier);
+
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.title")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.textPrice")));
+                        commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.callPrice")));
+                        if (!peers.isEmpty()) {
+                            commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.peers.title")));
+                            for (String peerId : peers) {
+                                Carrier peer = TelecomApi.get().getCarrierById(peerId);
+                                parser.setPeer(peer);
+
+                                commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.price.peers.data")));
                             }
                         }
                         break;
+                    }
 
 
                     default:

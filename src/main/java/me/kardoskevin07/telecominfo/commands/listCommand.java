@@ -17,14 +17,14 @@ import java.util.logging.Logger;
 public class listCommand implements TabExecutor {
 
 
-    private TelecomInfo mainClass = TelecomInfo.getInstance();
-    private FileConfiguration config = mainClass.getConfig();
-    private boolean debug = mainClass.getConfig().getBoolean("debug");
-    private Logger logger = mainClass.getLogger();
-    private PlaceholderParse parser = new PlaceholderParse();
+    private final TelecomInfo mainClass = TelecomInfo.getInstance();
+    private final FileConfiguration config = mainClass.getConfig();
+    private final boolean debug = mainClass.getConfig().getBoolean("debug");
+    private final Logger logger = mainClass.getLogger();
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+
         if (debug) logger.info("listCommand executed by " + commandSender.getName());
 
         List<Carrier> carrierList = TelecomApi.get().getAllCarriers();
@@ -76,10 +76,12 @@ public class listCommand implements TabExecutor {
                 }
                 Carrier carrier = carrierList.get(i);
 
-                tg.addRow(parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.carrier"),carrier),
-                        parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.owner"),carrier),
-                        parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.textPrice"),carrier),
-                        parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.callPrice"),carrier));
+                PlaceholderParse parser = new PlaceholderParse().setCarrier(carrier);
+
+                tg.addRow(parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.carrier")),
+                        parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.owner")),
+                        parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.textPrice")),
+                        parser.parse(mainClass.getConfig().getString("lang.listCommand.table.data.callPrice")));
                 if (debug) logger.info(carrier.getName() + " added");
             }
 
