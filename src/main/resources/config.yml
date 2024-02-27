@@ -3,14 +3,8 @@ listCommand:
   itemsPerPage: 5
 infoCommand:
   signal:
-    scanRadius: 128
-    scansPerRadius: 4
-  towerTypes:
-    - "5G"
-    - "LTE"
-    - "4G"
-    - "3G"
-    - "E"
+    scanRadius: 512
+    scanDensity: 4
 
 lang:
   listCommand:

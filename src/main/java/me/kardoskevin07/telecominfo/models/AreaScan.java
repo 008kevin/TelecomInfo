@@ -1,7 +1,7 @@
 package me.kardoskevin07.telecominfo.models;
 
-import com.dbteku.telecom.api.TelecomApi;
 import com.dbteku.telecom.models.Carrier;
+import com.dbteku.telecom.models.CellTower;
 import com.dbteku.telecom.models.WorldLocation;
 import me.kardoskevin07.telecominfo.TelecomInfo;
 
@@ -19,16 +19,16 @@ public class AreaScan {
     WorldLocation location;
     Carrier carrier;
     int scanRadius;
-    int scansPerRadius;
+    int scanDensity;
 
     int coveredAmount = 0;
-    ArrayList<TowerSignal> signalArrayList = new ArrayList<>();
+    ArrayList<TowerSignal> signalArrayList;
 
-    public AreaScan(WorldLocation location, Carrier carrier, int scanRadius, int scansPerRadius) {
+    public AreaScan(WorldLocation location, Carrier carrier, int scanRadius, int scanDensity) {
         this.location = location;
         this.carrier = carrier;
         this.scanRadius = scanRadius;
-        this.scansPerRadius = scansPerRadius;
+        this.scanDensity = scanDensity;
 
         scan();
     }
@@ -75,33 +75,46 @@ public class AreaScan {
     }
 
     private void scan() {
-        WorldLocation scanLocation = this.location;
+        signalArrayList = new ArrayList<>();
+        coveredAmount = 0;
 
-        int blocksPerScans = scanRadius / scansPerRadius;
+        int circleCount = scanRadius / (scanRadius / scanDensity);
 
-        for (int i = 0; i <= scansPerRadius * 2; i++) {
-            scanLocation = new WorldLocation(scanLocation.getX(),
-                    scanLocation.getY(),
-                    scanLocation.getZ() + blocksPerScans,
-                    scanLocation.getWorldName());
-            for (int j = 0; j <= scansPerRadius * 2; j++) {
-                if (debug) logger.info("Scan Z" + i + "X" + j);
-                scanLocation = new WorldLocation(scanLocation.getX() + blocksPerScans,
-                        scanLocation.getY(),
-                        scanLocation.getZ(),
-                        scanLocation.getWorldName());
-                if (debug) logger.info(scanLocation.getX() + " " + scanLocation.getZ());
-                if (carrier.getBestTowerByBand(scanLocation).determineStrength(scanLocation) > 0) {
-                    signalArrayList.add(new TowerSignal(TelecomApi.get().getCarrierByName(carrier.getName()).getBestTowerByBand(scanLocation), scanLocation));
-                    coveredAmount++;
-                    if (debug) logger.info(String.valueOf(coveredAmount));
-                }
-            }
-            scanLocation = new WorldLocation(scanLocation.getX() - scanRadius * 2 - blocksPerScans,
-                    scanLocation.getY(),
-                    scanLocation.getZ(),
-                    scanLocation.getWorldName());
+        if (debug) logger.info("Started signal scan at " + location.toString());
+
+        CellTower currentLocationTower = carrier.getBestTowerByBand(location);
+        if (currentLocationTower.determineStrength(location) > 0) {
+            signalArrayList.add(new TowerSignal(currentLocationTower, location));
+            coveredAmount++;
         }
+
+        for (int circleNum = 0; circleNum < circleCount; circleNum++) {
+            int r = scanRadius - circleNum * (scanRadius / circleCount);
+            if (debug) logger.info("Circle with radius of " + r);
+
+            int scanPointCount = 360 / (360 / scanDensity) * (Math.abs(circleNum - circleCount));
+
+            for (int pointNum = 0; pointNum < scanPointCount; pointNum++) {
+                double angleRad = pointNum * 0.5 * Math.PI;
+                if (debug) logger.info("Angle in radians: " + angleRad);
+
+                WorldLocation scanLocation = new WorldLocation(
+                        (int)(r * Math.sin(angleRad)) + location.getX(),
+                        location.getY(),
+                        (int)(r * Math.cos(angleRad)) + location.getZ(),
+                        location.getWorldName()
+                );
+                if (debug) logger.info("Point at " + scanLocation);
+
+                CellTower bestTower = carrier.getBestTowerByBand(scanLocation);
+                if (bestTower.determineStrength(scanLocation) > 0) {
+                    signalArrayList.add(new TowerSignal(bestTower, scanLocation));
+                    coveredAmount++;
+                }
+
+            }
+        }
+        if (debug) logger.info("Finished scan");
     }
 
 }

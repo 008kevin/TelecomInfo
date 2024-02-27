@@ -80,9 +80,9 @@ public class infoCommand implements TabExecutor {
                             Location location = ((Player) commandSender).getLocation();
                             WorldLocation worldLocation = new WorldLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(), ((Player) commandSender).getWorld().getName());
 
-                            int scansPerRadius = config.getInt("infoCommand.signal.scansPerRadius");
+                            int scanDensity = config.getInt("infoCommand.signal.scanDensity");
                             int scanRadius = config.getInt("infoCommand.signal.scanRadius");
-                            PlaceholderParse parser = new PlaceholderParse().setCarrier(carrier).setLocation(worldLocation).areaScan(scanRadius, scansPerRadius);
+                            PlaceholderParse parser = new PlaceholderParse().setCarrier(carrier).setLocation(worldLocation).areaScan(scanRadius, scanDensity);
 
                             commandSender.sendMessage(parser.parse(config.getString("lang.infoCommand.signal.title")));
                             if (carrier.getBestTowerByBand(worldLocation).determineStrength(worldLocation) > 0.0) {
