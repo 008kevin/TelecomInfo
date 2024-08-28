@@ -1,7 +1,7 @@
 package me.kardoskevin07.telecominfo;
 
-import me.kardoskevin07.telecominfo.commands.infoCommand;
-import me.kardoskevin07.telecominfo.commands.listCommand;
+import me.kardoskevin07.telecominfo.commands.InfoCommand;
+import me.kardoskevin07.telecominfo.commands.ListCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,8 +21,8 @@ public final class TelecomInfo extends JavaPlugin  {
             getLogger().warning("!!! Debug mode is enabled !!!");
         }
 
-        this.getCommand("listCarriers").setExecutor(new listCommand());
-        this.getCommand("carrierInfo").setExecutor(new infoCommand());
+        this.getCommand("listCarriers").setExecutor(new ListCommand());
+        this.getCommand("carrierInfo").setExecutor(new InfoCommand());
     }
 
     public static TelecomInfo getInstance() {
