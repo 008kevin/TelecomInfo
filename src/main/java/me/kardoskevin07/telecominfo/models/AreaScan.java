@@ -75,6 +75,7 @@ public class AreaScan {
         return this.coveredAmount;
     }
     public int getScanAmount() {return this.scanAmount;}
+    public int getScanRadius() {return this.scanRadius;}
 
     private void scan() {
         signalArrayList = new ArrayList<>();

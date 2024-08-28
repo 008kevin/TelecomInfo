@@ -4,6 +4,7 @@ main: me.kardoskevin07.telecominfo.TelecomInfo
 api-version: 1.17
 author: 008kevin
 depend: [Telecom]
+softdepend: [PlaceholderAPI]
 commands:
   listCarriers:
     description: Your description

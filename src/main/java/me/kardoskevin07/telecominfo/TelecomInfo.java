@@ -1,7 +1,9 @@
 package me.kardoskevin07.telecominfo;
 
+import me.kardoskevin07.telecominfo.addons.PapiAddon;
 import me.kardoskevin07.telecominfo.commands.InfoCommand;
 import me.kardoskevin07.telecominfo.commands.ListCommand;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,6 +18,14 @@ public final class TelecomInfo extends JavaPlugin  {
         FileConfiguration config = this.getConfig();
         saveDefaultConfig();
 
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PapiAddon(this).register();
+
+            getLogger().info("PAPI extension has been enabled");
+        } else {
+            getLogger().info("PAPI is not installed");
+        }
+
         getLogger().info("Loaded successfully");
         if (config.getBoolean("debug")) {
             getLogger().warning("!!! Debug mode is enabled !!!");
@@ -28,7 +38,6 @@ public final class TelecomInfo extends JavaPlugin  {
     public static TelecomInfo getInstance() {
         return instance;
     }
-
 
     @Override
     public void onDisable() {
