@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 public class PlaceholderParse {
 
     private final TelecomInfo mainClass = TelecomInfo.getInstance();
-    private final FileConfiguration config = mainClass.getConfig();
     private final boolean debug = mainClass.getConfig().getBoolean("debug");
     private final Logger logger = mainClass.getLogger();
 
