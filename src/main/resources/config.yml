@@ -26,7 +26,7 @@ lang:
     signal:
       title: "§7Signal information about §c§l${carrier}§7:"
       current: "§r - §cCurrent signal: §r${bestBandTower}, ${bestBandTowerStrength}"
-      averageTitle: "§r - §cTower stats in a §r${averageSignalArea} §carea:"
+      averageTitle: "§r - §cTower stats in a §r${averageSignalRadius} §cblock radius:"
       averageType: "§r    - §cMost covered by type: §r${averageCellType}"
       averageStrength: "§r    - §cAverage signal strength: §r${averageSignalStrength}"
       coverage: "§r    - §cCoverage: §r${coverage}"

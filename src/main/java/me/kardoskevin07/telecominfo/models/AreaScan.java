@@ -21,6 +21,7 @@ public class AreaScan {
     int scanRadius;
     int scanDensity;
 
+    int scanAmount = 0;
     int coveredAmount = 0;
     ArrayList<TowerSignal> signalArrayList;
 
@@ -73,10 +74,12 @@ public class AreaScan {
     public int getCoveredAmount() {
         return this.coveredAmount;
     }
+    public int getScanAmount() {return this.scanAmount;}
 
     private void scan() {
         signalArrayList = new ArrayList<>();
         coveredAmount = 0;
+        scanAmount = 0;
 
         int circleCount = scanRadius / (scanRadius / scanDensity);
 
@@ -86,7 +89,9 @@ public class AreaScan {
         if (currentLocationTower.determineStrength(location) > 0) {
             signalArrayList.add(new TowerSignal(currentLocationTower, location));
             coveredAmount++;
+            if (debug) logger.info("TowerSignal added");
         }
+        scanAmount++;
 
         for (int circleNum = 0; circleNum < circleCount; circleNum++) {
             int r = scanRadius - circleNum * (scanRadius / circleCount);
@@ -111,6 +116,7 @@ public class AreaScan {
                     signalArrayList.add(new TowerSignal(bestTower, scanLocation));
                     coveredAmount++;
                 }
+                scanAmount++;
 
             }
         }

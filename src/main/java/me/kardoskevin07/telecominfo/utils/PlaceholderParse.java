@@ -97,13 +97,13 @@ public class PlaceholderParse {
             int coveredAmount = scan.getCoveredAmount();
             double averageSignalStrength = scan.getAverageSignalStrength();
             String averageCellType = scan.getMostCommonCellType();
-            //scanAmount = (scansPerRadius * 2 + 1) * (scansPerRadius * 2 + 1);
+            int scanAmount = scan.getScanAmount();
 
-            //valuesMap.put("averageSignalArea", scanRadius * 2 + "x" + scanRadius * 2);
+            valuesMap.put("averageSignalRadius", String.valueOf(scanRadius));
             if (coveredAmount > 0) {
                 valuesMap.put("averageSignalStrength", formatSignalStrength(averageSignalStrength));
                 valuesMap.put("averageCellType", averageCellType);
-                //valuesMap.put("coverage", (float) Math.round(((float) coveredAmount / (float) scanAmount) * 10000) / 100.0 + "%");
+                valuesMap.put("coverage", (float) Math.round(((float) coveredAmount / (float) scanAmount) * 10000) / 100.0 + "%");
             } else {
                 valuesMap.put("averageSignalStrength", config.getString("lang.infoCommand.signal.areaError"));
                 valuesMap.put("averageCellType", config.getString("lang.infoCommand.signal.areaError"));
