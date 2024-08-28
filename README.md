@@ -1,3 +1,5 @@
+https://discord.gg/5hNaqhpczK
+
 # About
 A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.spigotmc.org/resources/telecom.42914/)
 # Requirements
