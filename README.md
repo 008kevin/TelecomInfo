@@ -1,6 +1,6 @@
 [![](https://img.shields.io/github/issues/008kevin/TelecomInfo?style=for-the-badge)](https://github.com/008kevin/TelecomInfo/issues) [![](https://img.shields.io/github/release/008kevin/TelecomInfo?style=for-the-badge)](https://github.com/008kevin/TelecomInfo/releases) [![](https://img.shields.io/github/downloads/008kevin/TelecomInfo/total?style=for-the-badge)](https://github.com/008kevin/TelecomInfo/releases) [![](https://img.shields.io/github/stars/008kevin/TelecomInfo?style=for-the-badge)]()
 ### Get notified about updates here:
-[![](https://dcbadge.limes.pink/api/server/https://discord.gg/5hNaqhpczK)](https://discord.gg/INVITE)
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/5hNaqhpczK)](https://discord.gg/5hNaqhpczK)
 # About
 A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.spigotmc.org/resources/telecom.42914/)
 # Requirements
