@@ -1,9 +1,15 @@
+[![](https://img.shields.io/github/issues/008kevin/TelecomInfo?style=for-the-badge)](https://github.com/008kevin/TelecomInfo/issues) [![](https://img.shields.io/github/release/008kevin/TelecomInfo?style=for-the-badge)](https://github.com/008kevin/TelecomInfo/releases) [![](https://img.shields.io/github/downloads/008kevin/TelecomInfo/total?style=for-the-badge)](https://github.com/008kevin/TelecomInfo/releases) [![](https://img.shields.io/github/stars/008kevin/TelecomInfo?style=for-the-badge)]()
+### Get notified about updates here:
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/5hNaqhpczK)](https://discord.gg/INVITE)
 # About
 A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.spigotmc.org/resources/telecom.42914/)
 # Requirements
 - Minecraft 1.17 and up
 - Java 17
 - Telecom (beta 0.31 and higher)
+
+
+- PlaceholderAPI (optional, for placeholder support)
 # Commands
 - `/carrierinfo [subcommand] [carrier name]`
   - general 
@@ -28,24 +34,45 @@ A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.sp
 - lang
   - Everything under here is related to what messages the plugin displays
   - There are some placeholders that can be used if applicable, examples can be found in the default config
-  - Possible placeholders are:
-    - carrier - carrier name
-    - owner - carrier owner
-    - textPrice - price per text of carrier
-    - callPrice - price per call message of carrier
-    - peers - a list of peers
-    - subscriberCount - number of subscribers
-    - subscribers - list of subscribers
-    - peer - name of the peer carrier
-    - peerOwner - owner of the peer carrier
-    - peerTextPrice - price per text of the peer carrier
-    - peerCallPrice - price per call message of the peer carrier
-    - peerSubscribers - number of subscribers of the peer carrier
-    - bestBandTower - type of best tower searched by type
-    - bestBandTowerStrength - strength of best tower searched by type
-    - bestSignalTower - type of best tower searched by signal strength
-    - bestSignalTowerStrength - strength of best tower searched by signal strength
-    - averageSignalArea - the size of the area of the signal scan
-    - averageSignalStrength - the average strength from the scan
-    - averageCellType - the most found tower type by the scan
-    - coverage - percentage value of the coverage
+
+# Placeholders
+- There are 3 types of placeholders, providing info about different things.
+- The placeholderAPI format looks like this: %telecominfo\_[type]\_[carrier]\_[info]%
+  - Replace the things in square brackets with the required information, carrier is the name of the carrier you want the info about, and info is the specific information you want to get.
+## Types
+- carrier
+  - carrier - The name of the carrier
+  - owner - Owner of the carrier
+  - textPrice - Price per text
+  - callPrice - Price per call message
+  - subscribers - A list of subscribers separated by commas
+  - subscriberCount - The number of the current count of subscribers
+  - peers - A comma separated list of all peered carriers
+- location
+  - bestBandTower - The type of tower that is providing the highest type signal
+  - bestBandTowerStrength - the strength of the tower that is providing the highest type of signal
+  - bestSignalTower - The type of tower providing the strongest signal
+  - bestSignalTowerStrength - The signal strength of the tower providing the strongest signal
+- area | ***Warning, use not reccomended!*** Can be very resource intensive if frequently queried.
+  - averageSignalRadius - The radius that is set in config to be scanned
+  - averageSignalStrength - The average strength of signal scanned from the player's location
+  - averageCellType - The average type of tower scanned from the player's location
+  - coverage - The percentage that signal was found at during the scan
+
+## Using placeholder in the lang
+- Currently, PlaceholderAPI is not supported
+- These, with a few extras can be used in the lang, but in a different way.
+  - To use them, but whatever info you want inside {curly braces}
+  - Some commands only support a few types
+    - listCommand: carrier
+    - infoCommand
+      - subscribers: carrier
+      - signal: carrier, location
+      - general: carrier
+      - price: carrier, extra
+        - here you can use some extra placeholders:
+          - peer - Name of the peered carrier
+          - peerOwner - Name of the owner of the peered carrier
+          - peerTextPrice - The price of texts at the peered carrier
+          - peerCallPrice - The price of call messages at the peered carrier
+          - peerSubscribers - The number of subscribers the peered carrier has
