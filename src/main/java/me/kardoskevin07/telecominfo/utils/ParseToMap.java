@@ -22,7 +22,7 @@ public class ParseToMap {
         HashMap<String, String> parseMap = new HashMap<>();
 
         List<String> subscribers = carrier.getSubscribers();
-        String subscriberString = stringifyList(subscribers);
+        String subscriberString = String.join(", ", subscribers);
 
         List<String> peers = new ArrayList<>();
         carrier.getPeers().forEachRemaining(peers::add);
@@ -95,21 +95,6 @@ public class ParseToMap {
         }
 
         return parseMap;
-    }
-
-
-
-    private String stringifyList(List<String> list) {
-        StringBuilder listAsString = new StringBuilder();
-
-        for (int i = 0; i < list.size() - 1; i++) {
-            listAsString.append(list.get(i)).append(", ");
-        }
-        if (!list.isEmpty()) {
-            listAsString.append(list.get(list.size() - 1));
-        }
-
-        return listAsString.toString();
     }
 
     private String stringifyCarrierIdList(List<String> list) {

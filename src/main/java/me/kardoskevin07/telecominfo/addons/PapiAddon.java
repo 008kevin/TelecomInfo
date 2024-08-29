@@ -15,10 +15,8 @@ import java.util.HashMap;
 
 public class PapiAddon extends PlaceholderExpansion {
 
-    private final FileConfiguration config;
-    public PapiAddon(TelecomInfo plugin) {
-        this.config = plugin.getConfig();
-    }
+    private final TelecomInfo main = TelecomInfo.getInstance();
+    private final FileConfiguration config = main.getConfig();
 
     @Override
     public @NotNull String getIdentifier() {
@@ -27,12 +25,12 @@ public class PapiAddon extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getAuthor() {
-        return "008kevin";
+        return String.join(", ", main.getDescription().getAuthors());
     }
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0.0";
+        return main.getDescription().getVersion();
     }
     @Override
     public boolean persist() {return true;}

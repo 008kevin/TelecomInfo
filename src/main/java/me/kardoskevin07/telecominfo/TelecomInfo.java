@@ -19,7 +19,7 @@ public final class TelecomInfo extends JavaPlugin  {
         saveDefaultConfig();
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PapiAddon(this).register();
+            new PapiAddon().register();
 
             getLogger().info("PAPI extension has been enabled");
         } else {
