@@ -1,12 +1,10 @@
 package me.kardoskevin07.telecominfo.utils;
 
-import com.dbteku.telecom.api.TelecomApi;
 import com.dbteku.telecom.models.Carrier;
 import com.dbteku.telecom.models.WorldLocation;
 import me.kardoskevin07.telecominfo.TelecomInfo;
 import me.kardoskevin07.telecominfo.models.AreaScan;
 import org.apache.commons.text.StringSubstitutor;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
@@ -15,7 +13,6 @@ import java.util.logging.Logger;
 public class PlaceholderParse {
 
     private final TelecomInfo mainClass = TelecomInfo.getInstance();
-    private final FileConfiguration config = mainClass.getConfig();
     private final boolean debug = mainClass.getConfig().getBoolean("debug");
     private final Logger logger = mainClass.getLogger();
 
@@ -52,105 +49,22 @@ public class PlaceholderParse {
 
         HashMap<String, String> valuesMap = new HashMap<>();
 
+        ParseToMap ptm = new ParseToMap();
+
         if (carrier != null) {
-            List<String> subscribers = carrier.getSubscribers();
-            String subscriberString = stringifyList(subscribers);
-
-            List<String> peers = new ArrayList<>();
-            carrier.getPeers().forEachRemaining(peers::add);
-            String peersString = stringifyCarrierIdList(peers);
-
-            valuesMap.put("carrier", carrier.getName());
-            valuesMap.put("owner", carrier.getOwner());
-            valuesMap.put("textPrice", "" + carrier.getPricePerText());
-            valuesMap.put("callPrice", "" + carrier.getPricePerMinute());
-            valuesMap.put("subscribers", subscriberString);
-            valuesMap.put("subscriberCount", "" + subscribers.size());
-            valuesMap.put("peers", peersString);
+            valuesMap.putAll(ptm.parseCarrier(carrier));
         }
         if (peer != null) {
-            valuesMap.put("peer", peer.getName());
-            valuesMap.put("peerOwner", peer.getOwner());
-            valuesMap.put("peerTextPrice", "" + peer.getPricePerText());
-            valuesMap.put("peerCallPrice", "" + peer.getPricePerMinute());
-            valuesMap.put("peerSubscribers", "" + peer.getSubscribers().size());
+            valuesMap.putAll(ptm.parsePeer(peer));
         }
         if (carrier != null && location != null) {
-            valuesMap.put(
-                    "bestBandTower",
-                    carrier.getBestTowerByBand(location).getType()
-            );
-            valuesMap.put(
-                    "bestBandTowerStrength",
-                    formatSignalStrength(carrier.getBestTowerByBand(location).determineStrength(location))
-            );
-            valuesMap.put(
-                    "bestSignalTower",
-                    carrier.getBestTowerBySignalStrength(location).getType()
-            );
-            valuesMap.put(
-                    "bestSignalTowerStrength",
-                    formatSignalStrength(carrier.getBestTowerBySignalStrength(location).determineStrength(location))
-            );
+            valuesMap.putAll(ptm.parseCarrierAtLocation(carrier, location));
         }
         if (scan != null) {
-            int coveredAmount = scan.getCoveredAmount();
-            double averageSignalStrength = scan.getAverageSignalStrength();
-            String averageCellType = scan.getMostCommonCellType();
-            int scanAmount = scan.getScanAmount();
-
-            valuesMap.put("averageSignalRadius", String.valueOf(scanRadius));
-            if (coveredAmount > 0) {
-                valuesMap.put("averageSignalStrength", formatSignalStrength(averageSignalStrength));
-                valuesMap.put("averageCellType", averageCellType);
-                valuesMap.put("coverage", (float) Math.round(((float) coveredAmount / (float) scanAmount) * 10000) / 100.0 + "%");
-            } else {
-                valuesMap.put("averageSignalStrength", config.getString("lang.infoCommand.signal.areaError"));
-                valuesMap.put("averageCellType", config.getString("lang.infoCommand.signal.areaError"));
-                valuesMap.put("coverage", config.getString("lang.infoCommand.signal.areaError"));
-            }
+            valuesMap.putAll(ptm.parseScan(scan));
         }
 
 
         return new StringSubstitutor(valuesMap).replace(input);
-    }
-
-    private String formatSignalStrength(double signalStrength) {
-        if (signalStrength < 0.20) return ChatColor.RED + "⏺○○○○";
-        else if (signalStrength < 0.40) return ChatColor.YELLOW + "⏺⏺○○○";
-        else if (signalStrength < 0.60) return ChatColor.GREEN + "⏺⏺⏺○○";
-        else if (signalStrength < 0.80) return ChatColor.GREEN + "⏺⏺⏺⏺○";
-        else
-            return ChatColor.GREEN + "⏺⏺⏺⏺⏺";
-    }
-
-    private String stringifyList(List<String> list) {
-        StringBuilder listAsString = new StringBuilder();
-
-        for (int i = 0; i < list.size() - 1; i++) {
-            listAsString.append(list.get(i)).append(", ");
-        }
-        if (!list.isEmpty()) {
-            listAsString.append(list.get(list.size() - 1));
-        }
-
-        return listAsString.toString();
-    }
-
-    private String stringifyCarrierIdList(List<String> list) {
-        StringBuilder listAsString = new StringBuilder();
-
-        for (int i = 0; i < list.size() - 1; i++) {
-            listAsString.append(getCarrierById(list.get(i)).getName()).append(", ");
-        }
-        if (!list.isEmpty()) {
-            listAsString.append(getCarrierById(list.get(list.size() - 1)).getName());
-        }
-
-        return listAsString.toString();
-    }
-
-    private Carrier getCarrierById(String id) {
-        return TelecomApi.get().getCarrierById(id);
     }
 }
