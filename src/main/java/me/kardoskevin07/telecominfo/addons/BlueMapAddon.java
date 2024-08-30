@@ -12,27 +12,32 @@ import org.bukkit.Bukkit;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 public class BlueMapAddon {
     public BlueMapAddon(BlueMapAPI api) {
         List<Carrier> carrierList = TelecomApi.get().getAllCarriers();
         for (Carrier carrier : carrierList) {
+            // Create a MarkerSet for the carrier
             MarkerSet markerSet = MarkerSet.builder().label(carrier.getName()).build();
 
             Iterator<CellTower> cellTowerIterator = carrier.getTowers();
 
-            for (; cellTowerIterator.hasNext(); ) {
+            // loop over all celltowers the carrier has
+            while (cellTowerIterator.hasNext()) {
                 CellTower cellTower = cellTowerIterator.next();
                 WorldLocation worldLocation = cellTower.getLocation();
 
+                // make a POIMarker for each CellTower
                 POIMarker marker = POIMarker.builder()
                         .label(carrier.getName() + " - " + cellTower.getType())
                         .position((float)worldLocation.getX(), (float)worldLocation.getY(), (float)worldLocation.getZ())
                         .build();
 
-                markerSet.getMarkers().put("telecominfo marker" + new Random(33444343), marker);
+                // Add the marker to the markerSet, with its id as a random UUID
+                markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), marker);
             }
+            // TODO: make it work on every world, separately
             api.getWorld(Bukkit.getWorld("world")).ifPresent(world -> {
                 for (BlueMapMap map : world.getMaps()) {
                     map.getMarkerSets().put(carrier.getName(), markerSet);
