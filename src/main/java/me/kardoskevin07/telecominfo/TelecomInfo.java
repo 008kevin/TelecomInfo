@@ -1,11 +1,15 @@
 package me.kardoskevin07.telecominfo;
 
+import de.bluecolored.bluemap.api.BlueMapAPI;
+import me.kardoskevin07.telecominfo.addons.BlueMapAddon;
 import me.kardoskevin07.telecominfo.addons.PapiAddon;
 import me.kardoskevin07.telecominfo.commands.InfoCommand;
 import me.kardoskevin07.telecominfo.commands.ListCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Optional;
 
 public final class TelecomInfo extends JavaPlugin  {
 
@@ -18,12 +22,17 @@ public final class TelecomInfo extends JavaPlugin  {
         FileConfiguration config = this.getConfig();
         saveDefaultConfig();
 
+        // PlaceholderAPI check
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PapiAddon().register();
-
             getLogger().info("PAPI extension has been enabled");
         } else {
             getLogger().info("PAPI is not installed");
+        }
+
+        // BlueMap integration
+        if (Bukkit.getPluginManager().getPlugin("BlueMap") != null) {
+            BlueMapAPI.onEnable(BlueMapAddon::new);
         }
 
         getLogger().info("Loaded successfully");
