@@ -31,19 +31,19 @@ public class BlueMapAddon {
                 CellTower cellTower = cellTowerIterator.next();
                 WorldLocation worldLocation = cellTower.getLocation();
 
-                // make a POIMarker for each CellTower
+                // make a POIMarker for the given cell tower
                 POIMarker poiMarker = POIMarker.builder()
                         .label(carrier.getName() + " - " + cellTower.getType())
                         .position(worldLocation.getX()  + 0.5, worldLocation.getY()  + 0.5, worldLocation.getZ()  + 0.5)
                         .build();
 
-                // Add the poiMarker to the markerSet, with its id as a random UUID
+                // Add poiMarker to the markerSet, with its id as a random UUID
                 markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), poiMarker);
 
-                // variables for drawing circle
                 int radius = 200;
-                int numOfPoints = 16;
+                int numOfPoints = (int) (Math.ceil((double) radius / 100) * 16);
 
+                // build circle shapeMarker for the given cell tower
                 ShapeMarker shapeMarker = ShapeMarker.builder()
                         .label(carrier.getName() + " - " + cellTower.getType())
                         .shape(Shape.createCircle(new Vector2d(cellTower.getLocation().getX() + 0.5, cellTower.getLocation().getZ() + 0.5), radius, numOfPoints), (float) (cellTower.getLocation().getY() + 0.5))
@@ -52,6 +52,7 @@ public class BlueMapAddon {
                         .depthTestEnabled(false)
                         .build();
 
+                // Add shapeMarker to the markerSet, with its id as a random UUID
                 markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), shapeMarker);
             }
             // TODO: make it work on every world, separately
