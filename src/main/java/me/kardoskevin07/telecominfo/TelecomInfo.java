@@ -31,8 +31,10 @@ public final class TelecomInfo extends JavaPlugin  {
         }
 
         // BlueMap integration
-        if (Bukkit.getPluginManager().getPlugin("BlueMap") != null) {
-            BlueMapAPI.onEnable(BlueMapAddon::new);
+        if (config.getBoolean("bluemap.enabled")) {
+            if (Bukkit.getPluginManager().getPlugin("BlueMap") != null) {
+                BlueMapAPI.onEnable(BlueMapAddon::new);
+            }
         }
 
         getLogger().info("Loaded successfully");

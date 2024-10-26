@@ -45,40 +45,22 @@ public class BlueMapAddon {
                 // loop over all cell towers the carrier has
                 while (cellTowerIterator.hasNext()) {
                     CellTower cellTower = cellTowerIterator.next();
-                    WorldLocation worldLocation = cellTower.getLocation();
 
                     // Skip iteration if other world
-                    if (!Objects.equals(worldLocation.getWorldName(), world.getName())) {continue;}
-
-                    // make a POIMarker for the given cell tower
-                    POIMarker poiMarker = POIMarker.builder()
-                            .label(carrier.getName() + " - " + cellTower.getType())
-                            .position(worldLocation.getX()  + 0.5, worldLocation.getY()  + 0.5, worldLocation.getZ()  + 0.5)
-                            .build();
-
-                    // Add poiMarker to the markerSet, with its id as a random UUID
-                    markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), poiMarker);
-
-                    int radius = config.getInt("general." + cellTower.getType() + ".range");
-                    int numOfPoints = (int) (Math.ceil((double) radius / 100) * 16);
-                    int color = Integer.decode("0x" + config.getString("general." + cellTower.getType() + ".color"));
+                    if (!Objects.equals(cellTower.getLocation().getWorldName(), world.getName())) {continue;}
                     
-                    if (debug) {logger.info("Adding tower to bluemap: " + carrier.getName() + ", " + cellTower.getType() + ", " + color);}
-
-                    // build circle shapeMarker for the given cell tower
-                    ShapeMarker shapeMarker = ShapeMarker.builder()
-                            .label(carrier.getName() + " - " + cellTower.getType())
-                            .shape(Shape.createCircle(new Vector2d(cellTower.getLocation().getX() + 0.5, cellTower.getLocation().getZ() + 0.5), radius, numOfPoints), (float) (cellTower.getLocation().getY() + 0.5))
-                            .centerPosition()
-                            .maxDistance(Double.MAX_VALUE)
-                            .depthTestEnabled(false)
-                            .fillColor(new Color(color, 0.3f))
-                            .lineColor(new Color(color))
-                            .lineWidth(50)
-                            .build();
-
-                    // Add shapeMarker to the markerSet, with its id as a random UUID
-                    markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), shapeMarker);
+                    // check for the mode
+                    if (Objects.equals(config.getString("bluemap.mode"), "poi") || Objects.equals(config.getString("bluemap.mode"), "both")) {
+                        // Add poiMarker to the markerSet, with its id as a random UUID
+                        markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), getPoiMarker(carrier, cellTower));
+                    } 
+                    else if (Objects.equals(config.getString("bluemap.mode"), "radius") || Objects.equals(config.getString("bluemap.mode"), "both")) {
+                        // Add shapeMarker to the markerSet, with its id as a random UUID
+                        markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), getShapeMarker(carrier, cellTower));
+                    } 
+                    else {
+                        logger.severe("Unknown bluemap mode \"" + config.getString("bluemap.mode") + "\" set in the config. Unable to add any map markers");
+                    }
                 }
 
                 // Add markers to the given world
@@ -89,5 +71,29 @@ public class BlueMapAddon {
                 });
             }
         }
+    }
+
+    private static POIMarker getPoiMarker(Carrier carrier, CellTower cellTower) {
+        return POIMarker.builder()
+                .label(carrier.getName() + " - " + cellTower.getType())
+                .position(cellTower.getLocation().getX()  + 0.5, cellTower.getLocation().getY()  + 0.5, cellTower.getLocation().getZ()  + 0.5)
+                .build();
+    }
+
+    private ShapeMarker getShapeMarker(Carrier carrier, CellTower cellTower) {
+        int radius = config.getInt("general." + cellTower.getType() + ".range");
+        int numOfPoints = (int) (Math.ceil((double) radius / 100) * 16);
+        int color = Integer.decode("0x" + config.getString("general." + cellTower.getType() + ".color"));
+
+        // build circle shapeMarker
+        return ShapeMarker.builder()
+                .label(carrier.getName() + " - " + cellTower.getType())
+                .shape(Shape.createCircle(new Vector2d(cellTower.getLocation().getX() + 0.5, cellTower.getLocation().getZ() + 0.5), radius, numOfPoints), (float) (cellTower.getLocation().getY() + 0.5))
+                .centerPosition()
+                .maxDistance(Double.MAX_VALUE)
+                .depthTestEnabled(false)
+                .lineColor(new Color(color, 0.9f))
+                .fillColor(new Color(color, 0.3f))
+                .build();
     }
 }
