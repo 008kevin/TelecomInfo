@@ -13,6 +13,8 @@ A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.sp
 - Telecom (beta 0.31 and higher)
 
 
+
+- BlueMap (optional, add markers, and/or ranges to BlueMap)
 - PlaceholderAPI (optional, for placeholder support)
 # Commands
 - `/carrierinfo [subcommand] [carrier name]`
@@ -29,12 +31,31 @@ A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.sp
 # Config
 [Default config](https://github.com/008kevin/TelecomInfo/blob/main/src/main/resources/config.yml)
 - debug - prints some messages to the console to help debug issues
+- general - has some general data of towers. **These need to be set to the same values as in the telecom config!**
+  - [band]
+    - range
+    - speed
+    - color
+    - icon
+    - iconAnchorX
+    - iconAnchorY
 - listCommand
   - itemsPerPage - defines how many rows should be on a ingle page of the list command
 - infoCommand
   - signal
     - scanRadius - how many blocks away should the scan go around the player (higher values will result in worse accuracy unless scans per radius is increased). The scan is done in a square
     - scansPerRadius - how many scans should be performed in the given radius. (higher values will cause more scans requiring more cpu power)
+- bluemap
+  - enabled (true/false) - should the bluemap integration run?
+  - mode
+    - "poi" - Adds an icon to the map at the location
+    - "radius" - Adds a circle showing the tower's radius on the map
+    - "both" - Adds both
+  - hiddenByDefault (true/false) - If the created categories be hidden by default on the map
+  - groupBy
+    - "carrier" - Creates groups for each carrier, with all their towers
+    - "type" - Created groups for each carrier, and each band that carrier has
+  - updateInterval - The interval in seconds at which updating the data should happen at
 - lang
   - Everything under here is related to what messages the plugin displays
   - There are some placeholders that can be used if applicable, examples can be found in the default config

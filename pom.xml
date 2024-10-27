@@ -6,7 +6,7 @@
 
     <groupId>me.kardoskevin07</groupId>
     <artifactId>TelecomInfo</artifactId>
-    <version>1.0</version>
+    <version>1.5</version>
     <packaging>jar</packaging>
 
     <name>TelecomInfo</name>
@@ -65,6 +65,10 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+        <repository>
+            <id>bluecolored</id>
+            <url>https://repo.bluecolored.de/releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -90,6 +94,12 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.bluecolored.bluemap</groupId>
+            <artifactId>BlueMapAPI</artifactId>
+            <version>2.7.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

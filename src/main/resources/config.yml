@@ -1,10 +1,63 @@
 debug: false
+
+general:
+  GPRS:
+    range: 50
+    speed: 10
+    color: "fc37f2"
+    icon: "assets/poi.svg"
+    iconAnchorX: 25
+    iconAnchorY: 50
+  E:
+    range: 100
+    speed: 25
+    color: "fc3737"
+    icon: "assets/poi.svg"
+    iconAnchorX: 25
+    iconAnchorY: 50
+  3G:
+    range: 200
+    speed: 100
+    color: "fc8337"
+    icon: "assets/poi.svg"
+    iconAnchorX: 25
+    iconAnchorY: 50
+  4G:
+    range: 300
+    speed: 300
+    color: "fce837"
+    icon: "assets/poi.svg"
+    iconAnchorX: 25
+    iconAnchorY: 50
+  LTE:
+    range: 400
+    speed: 800
+    color: "7cfc37"
+    icon: "assets/poi.svg"
+    iconAnchorX: 25
+    iconAnchorY: 50
+  5G:
+    range: 100
+    speed: 400
+    color: "2ab4f9"
+    icon: "assets/poi.svg"
+    iconAnchorX: 25
+    iconAnchorY: 50
+
 listCommand:
   itemsPerPage: 5
 infoCommand:
   signal:
     scanRadius: 512
     scanDensity: 4
+
+bluemap:
+  enabled: true
+  mode: "both"
+  hiddenByDefault: true
+  groupBy: "carrier"
+  updateInterval: 300
+  
 
 lang:
   listCommand:
