@@ -26,6 +26,7 @@ general:
     speed: 400
     color: "2ab4f9"
 
+
 listCommand:
   itemsPerPage: 5
 infoCommand:
@@ -35,6 +36,10 @@ infoCommand:
 
 bluemap:
   enabled: true
+  mode: "both"
+  hiddenByDefault: true
+  groupBy: "carrier"
+  
 
 lang:
   listCommand:

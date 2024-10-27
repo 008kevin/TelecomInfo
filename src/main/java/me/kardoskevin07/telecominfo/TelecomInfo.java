@@ -9,8 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Optional;
-
 public final class TelecomInfo extends JavaPlugin  {
 
     private static TelecomInfo instance;
