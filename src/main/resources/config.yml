@@ -39,6 +39,7 @@ bluemap:
   mode: "both"
   hiddenByDefault: true
   groupBy: "carrier"
+  updateInterval: 300
   
 
 lang:

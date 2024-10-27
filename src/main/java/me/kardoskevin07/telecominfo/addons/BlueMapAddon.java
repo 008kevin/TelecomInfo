@@ -15,6 +15,7 @@ import me.kardoskevin07.telecominfo.TelecomInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -29,79 +30,81 @@ public class BlueMapAddon {
     public BlueMapAddon(BlueMapAPI api) {
         // TODO: add logging
         // TODO: input checking, error messages, handling
-        
-        List<Carrier> carrierList = TelecomApi.get().getAllCarriers();
-        List<World> worlds = Bukkit.getWorlds();
-        if (Objects.equals(config.getString("bluemap.groupBy"), "none") ||  Objects.equals(config.getString("bluemap.groupBy"), "carrier")) {
-            for (Carrier carrier : carrierList) {
-                for (World world : worlds) {
-                    MarkerSet markerSet;
-                    if (Objects.equals(config.getString("bluemap.groupBy"), "none")) {
-                        markerSet = MarkerSet.builder()
-                                .label("Telecom")
-                                .defaultHidden(config.getBoolean("bluemap.hiddenByDefault"))
-                                .build();
-                    } else {
-                        markerSet = MarkerSet.builder()
-                                .label(carrier.getName())
-                                .defaultHidden(config.getBoolean("bluemap.hiddenByDefault"))
-                                .build();
-                    }
-                    
-                    Iterator<CellTower> cellTowerIterator = carrier.getTowers();
-                    // loop over all cell towers the carrier has
-                    while (cellTowerIterator.hasNext()) {
-                        CellTower cellTower = cellTowerIterator.next();
 
-                        // Skip iteration if other world
-                        if (!Objects.equals(cellTower.getLocation().getWorldName(), world.getName())) {continue;}
+        new BukkitRunnable() 
+        {
+            @Override
+            public void run()
+            {
+                if (debug) logger.info("Updating BlueMap markers");
+                List<Carrier> carrierList = TelecomApi.get().getAllCarriers();
+                List<World> worlds = Bukkit.getWorlds();
+                if (Objects.equals(config.getString("bluemap.groupBy"), "carrier")) {
+                    for (Carrier carrier : carrierList) {
+                        for (World world : worlds) {
+                            MarkerSet markerSet = MarkerSet.builder()
+                                    .label(carrier.getName())
+                                    .defaultHidden(config.getBoolean("bluemap.hiddenByDefault"))
+                                    .build();
 
-                        addMarkersToSet(carrier, markerSet, cellTower);
-                    }
-                    // add MarkerSet to world
-                    api.getWorld(Bukkit.getWorld(world.getName())).ifPresent(currentWorld -> {
-                        for (BlueMapMap map : currentWorld.getMaps()) {
-                            map.getMarkerSets().put(carrier.getName(), markerSet);
-                        }
-                    });
-                }
-            }
-        }
-        else if (Objects.equals(config.getString("bluemap.groupBy"), "type")) {
-            Set<String> rangeKeys = config.getConfigurationSection("general").getKeys(false);
-            for (String towerType : rangeKeys) {
-                for (Carrier carrier : carrierList) {
-                    for (World world : worlds) {
-                        MarkerSet markerSet = MarkerSet.builder()
-                                .label(carrier.getName() + " - " + towerType)
-                                .defaultHidden(config.getBoolean("bluemap.hiddenByDefault"))
-                                .build();
+                            Iterator<CellTower> cellTowerIterator = carrier.getTowers();
+                            // loop over all cell towers the carrier has
+                            while (cellTowerIterator.hasNext()) {
+                                CellTower cellTower = cellTowerIterator.next();
 
-                        Iterator<CellTower> cellTowerIterator = carrier.getTowers();
-                        // loop over all cell towers the carrier has
-                        while (cellTowerIterator.hasNext()) {
-                            CellTower cellTower = cellTowerIterator.next();
+                                // Skip iteration if other world
+                                if (!Objects.equals(cellTower.getLocation().getWorldName(), world.getName())) {
+                                    continue;
+                                }
 
-                            // Skip iteration if other world or other type
-                            if (!Objects.equals(cellTower.getLocation().getWorldName(), world.getName()) || !Objects.equals(cellTower.getType(), towerType)) {continue;}
-
-                            addMarkersToSet(carrier, markerSet, cellTower);
-                        }
-                        // add MarkerSet to world if its is not empty
-                        if (!markerSet.getMarkers().isEmpty()) {
+                                addMarkersToSet(carrier, markerSet, cellTower);
+                            }
+                            // add MarkerSet to world
                             api.getWorld(Bukkit.getWorld(world.getName())).ifPresent(currentWorld -> {
                                 for (BlueMapMap map : currentWorld.getMaps()) {
-                                    map.getMarkerSets().put(carrier.getName() + "_" + towerType, markerSet);
+                                    map.getMarkerSets().put(carrier.getName(), markerSet);
                                 }
                             });
                         }
                     }
+                } else if (Objects.equals(config.getString("bluemap.groupBy"), "type")) {
+                    Set<String> rangeKeys = config.getConfigurationSection("general").getKeys(false);
+                    for (String towerType : rangeKeys) {
+                        for (Carrier carrier : carrierList) {
+                            for (World world : worlds) {
+                                MarkerSet markerSet = MarkerSet.builder()
+                                        .label(carrier.getName() + " - " + towerType)
+                                        .defaultHidden(config.getBoolean("bluemap.hiddenByDefault"))
+                                        .build();
+
+                                Iterator<CellTower> cellTowerIterator = carrier.getTowers();
+                                // loop over all cell towers the carrier has
+                                while (cellTowerIterator.hasNext()) {
+                                    CellTower cellTower = cellTowerIterator.next();
+
+                                    // Skip iteration if other world or other type
+                                    if (!Objects.equals(cellTower.getLocation().getWorldName(), world.getName()) || !Objects.equals(cellTower.getType(), towerType)) {
+                                        continue;
+                                    }
+
+                                    addMarkersToSet(carrier, markerSet, cellTower);
+                                }
+                                // add MarkerSet to world if its is not empty
+                                if (!markerSet.getMarkers().isEmpty()) {
+                                    api.getWorld(Bukkit.getWorld(world.getName())).ifPresent(currentWorld -> {
+                                        for (BlueMapMap map : currentWorld.getMaps()) {
+                                            map.getMarkerSets().put(carrier.getName() + "_" + towerType, markerSet);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    logger.severe("Unknown bluemap sort \"" + config.getString("bluemap.groupBy") + "\" set in the config. Unable to add any map markers");
                 }
             }
-        }
-        else {
-            logger.severe("Unknown bluemap sort \"" + config.getString("bluemap.groupBy") + "\" set in the config. Unable to add any map markers");
-        }
+        }.runTaskTimer(mainClass, 0L, 20L * config.getInt("bluemap.updateInterval"));
     }
 
     private void addMarkersToSet(Carrier carrier, MarkerSet markerSet, CellTower cellTower) {
