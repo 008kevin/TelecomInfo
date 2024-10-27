@@ -28,8 +28,6 @@ public class BlueMapAddon {
     private final Logger logger = mainClass.getLogger();
     
     public BlueMapAddon(BlueMapAPI api) {
-        // TODO: input checking, error messages, handling
-
         new BukkitRunnable() 
         {
             @Override
@@ -134,19 +132,38 @@ public class BlueMapAddon {
     }
 
     private ShapeMarker getShapeMarker(Carrier carrier, CellTower cellTower) {
+        ShapeMarker.Builder shapeMarkerBuilder = ShapeMarker.builder()
+                .label("Radius: " + carrier.getName() + " - " + cellTower.getType())
+                .maxDistance(Double.MAX_VALUE)
+                .depthTestEnabled(false);
+        
         int radius = config.getInt("general." + cellTower.getType() + ".range");
-        int numOfPoints = (int) (Math.ceil((double) radius / 100) * 16);
-        int color = Integer.decode("0x" + config.getString("general." + cellTower.getType() + ".color"));
+        
+        String colorString = config.getString("general." + cellTower.getType() + ".color");
 
+
+        int numOfPoints;
+        if (radius != 0) {
+            numOfPoints = (int) (Math.ceil((double) radius / 100) * 16);
+        } else {
+            numOfPoints = 3;
+            logger.severe("Radius is not set for " + cellTower.getType());
+        }
+        
         if (debug) logger.info("\tNumber of points: " + numOfPoints + " (radius: " + radius + ")");
+
+        int color;
+        try {
+            color = Integer.decode("0x" + colorString);
+        } catch (NumberFormatException e) {
+            logger.severe("Incorrect format for color of " + cellTower.getType());
+            color = 0;
+        }
         
         // build circle shapeMarker
-        return ShapeMarker.builder()
-                .label("Radius: " + carrier.getName() + " - " + cellTower.getType())
+        return shapeMarkerBuilder
                 .shape(Shape.createCircle(new Vector2d(cellTower.getLocation().getX() + 0.5, cellTower.getLocation().getZ() + 0.5), radius, numOfPoints), (float) (cellTower.getLocation().getY() + 0.5))
                 .centerPosition()
-                .maxDistance(Double.MAX_VALUE)
-                .depthTestEnabled(false)
                 .lineColor(new Color(color, 0.9f))
                 .fillColor(new Color(color, 0.2f))
                 .build();
