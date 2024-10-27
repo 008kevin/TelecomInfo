@@ -28,7 +28,6 @@ public class BlueMapAddon {
     private final Logger logger = mainClass.getLogger();
     
     public BlueMapAddon(BlueMapAPI api) {
-        // TODO: add logging
         // TODO: input checking, error messages, handling
 
         new BukkitRunnable() 
@@ -40,6 +39,7 @@ public class BlueMapAddon {
                 List<Carrier> carrierList = TelecomApi.get().getAllCarriers();
                 List<World> worlds = Bukkit.getWorlds();
                 if (Objects.equals(config.getString("bluemap.groupBy"), "carrier")) {
+                    if (debug) logger.info("Group by: carrier");
                     for (Carrier carrier : carrierList) {
                         for (World world : worlds) {
                             MarkerSet markerSet = MarkerSet.builder()
@@ -68,6 +68,7 @@ public class BlueMapAddon {
                         }
                     }
                 } else if (Objects.equals(config.getString("bluemap.groupBy"), "type")) {
+                    if (debug) logger.info("Group by: type");
                     Set<String> rangeKeys = config.getConfigurationSection("general").getKeys(false);
                     for (String towerType : rangeKeys) {
                         for (Carrier carrier : carrierList) {
@@ -111,10 +112,12 @@ public class BlueMapAddon {
         // check for the mode
         if (Objects.equals(config.getString("bluemap.mode"), "poi") || Objects.equals(config.getString("bluemap.mode"), "both")) {
             // Add poiMarker to the markerSet, with its id as a random UUID
+            if (debug) logger.info("Adding POI marker: " + carrier.getName() + " " + cellTower.getType());
             markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), getPoiMarker(carrier, cellTower));
         } 
         if (Objects.equals(config.getString("bluemap.mode"), "radius") || Objects.equals(config.getString("bluemap.mode"), "both")) {
             // Add shapeMarker to the markerSet, with its id as a random UUID
+            if (debug) logger.info("Adding Shape marker: " + carrier.getName() + " " + cellTower.getType());
             markerSet.getMarkers().put(String.valueOf(UUID.randomUUID()), getShapeMarker(carrier, cellTower));
         } 
         
@@ -135,6 +138,8 @@ public class BlueMapAddon {
         int numOfPoints = (int) (Math.ceil((double) radius / 100) * 16);
         int color = Integer.decode("0x" + config.getString("general." + cellTower.getType() + ".color"));
 
+        if (debug) logger.info("\tNumber of points: " + numOfPoints + " (radius: " + radius + ")");
+        
         // build circle shapeMarker
         return ShapeMarker.builder()
                 .label("Radius: " + carrier.getName() + " - " + cellTower.getType())
