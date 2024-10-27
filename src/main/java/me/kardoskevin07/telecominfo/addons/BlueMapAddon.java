@@ -128,6 +128,7 @@ public class BlueMapAddon {
         return POIMarker.builder()
                 .label("Tower: " + carrier.getName() + " - " + cellTower.getType())
                 .position(cellTower.getLocation().getX()  + 0.5, cellTower.getLocation().getY()  + 0.5, cellTower.getLocation().getZ()  + 0.5)
+                .icon(config.getString("general." + cellTower.getType() + ".icon"), config.getInt("general." + cellTower.getType() + ".iconAnchorX"), config.getInt("general." + cellTower.getType() + ".iconAnchorY"))
                 .build();
     }
 
