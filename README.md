@@ -75,7 +75,7 @@ A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.sp
   - peers - A comma separated list of all peered carriers
 - location
   - bestBandTower - The type of tower that is providing the highest type signal
-  - bestBandTowerStrength - the strength of the tower that is providing the highest type of signal
+  - bestBandTowerStrength - The strength of the tower that is providing the highest type of signal
   - bestSignalTower - The type of tower providing the strongest signal
   - bestSignalTowerStrength - The signal strength of the tower providing the strongest signal
 - area | ***Warning, use not reccomended!*** Can be very resource intensive if frequently queried.
@@ -83,6 +83,13 @@ A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.sp
   - averageSignalStrength - The average strength of signal scanned from the player's location
   - averageCellType - The average type of tower scanned from the player's location
   - coverage - The percentage that signal was found at during the scan
+- player | Info related to the player that the placeholder is shown to <br> _A special format is used: %telecominfo\_player\_[info]% (carrier not needed)_
+  - bestBandTower - The type of tower that is providing the highest type signal at the players location
+  - bestBandTowerStrength - The strength of the tower that is providing the highest type of signal at the players location
+  - bestSignalTower - The type of tower providing the strongest signal at the players location
+  - bestSignalTowerStrength - The signal strength of the tower providing the strongest signal at the players location
+  - carrier - Gives the name of the carrier the player is subscribed to
+  - isSubscribed - Returns `yes` if the player is subscribed, `no` if not
 
 ## Using placeholder in the lang
 - Currently, PlaceholderAPI is not supported
