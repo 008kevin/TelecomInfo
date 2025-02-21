@@ -39,11 +39,11 @@ public class PapiAddon extends PlaceholderExpansion {
 
     public String onPlaceholderRequest(Player player, @NotNull String s) {
         if (s.split("_").length >= 2) {
-            String carrierString = s.substring(s.indexOf("_") + 1, s.lastIndexOf("_"));
-            Carrier carrier = TelecomApi.get().getCarrierByName(carrierString);
             String dataName = s.substring(s.lastIndexOf("_") + 1);
 
             if (s.startsWith("carrier_")) {
+                String carrierString = s.substring(s.indexOf("_") + 1, s.lastIndexOf("_"));
+                Carrier carrier = TelecomApi.get().getCarrierByName(carrierString);
                 ParseToMap ptm = new ParseToMap();
 
                 HashMap<String, String> dataMap = ptm.parseCarrier(carrier);
@@ -52,6 +52,8 @@ public class PapiAddon extends PlaceholderExpansion {
                 }
             }
             if (s.startsWith("location_")) {
+                String carrierString = s.substring(s.indexOf("_") + 1, s.lastIndexOf("_"));
+                Carrier carrier = TelecomApi.get().getCarrierByName(carrierString);
                 ParseToMap ptm = new ParseToMap();
 
                 HashMap<String, String> dataMap = ptm.parseCarrierAtLocation(carrier, new WorldLocation(player.getLocation()));
@@ -60,6 +62,8 @@ public class PapiAddon extends PlaceholderExpansion {
                 }
             }
             if (s.startsWith("area_")) {
+                String carrierString = s.substring(s.indexOf("_") + 1, s.lastIndexOf("_"));
+                Carrier carrier = TelecomApi.get().getCarrierByName(carrierString);
                 ParseToMap ptm = new ParseToMap();
 
                 int scanDensity = config.getInt("infoCommand.signal.scanDensity");
@@ -67,6 +71,14 @@ public class PapiAddon extends PlaceholderExpansion {
                 AreaScan as = new AreaScan(new WorldLocation(player.getLocation()), carrier, scanRadius, scanDensity);
 
                 HashMap<String, String> dataMap = ptm.parseScan(as);
+                if (dataMap.containsKey(dataName)) {
+                    return dataMap.get(dataName);
+                }
+            }
+            if (s.startsWith("player_")) {
+                ParseToMap ptm = new ParseToMap();
+
+                HashMap<String, String> dataMap = ptm.parsePlayer(player);
                 if (dataMap.containsKey(dataName)) {
                     return dataMap.get(dataName);
                 }

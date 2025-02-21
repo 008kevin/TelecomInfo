@@ -2,14 +2,17 @@ package me.kardoskevin07.telecominfo.utils;
 
 import com.dbteku.telecom.api.TelecomApi;
 import com.dbteku.telecom.models.Carrier;
+import com.dbteku.telecom.models.CellTower;
 import com.dbteku.telecom.models.WorldLocation;
 import me.kardoskevin07.telecominfo.TelecomInfo;
 import me.kardoskevin07.telecominfo.models.AreaScan;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -92,6 +95,54 @@ public class ParseToMap {
             parseMap.put("averageSignalStrength", config.getString("lang.infoCommand.signal.areaError"));
             parseMap.put("averageCellType", config.getString("lang.infoCommand.signal.areaError"));
             parseMap.put("coverage", config.getString("lang.infoCommand.signal.areaError"));
+        }
+
+        return parseMap;
+    }
+
+    public HashMap<String, String> parsePlayer(Player player) {
+        HashMap<String, String> parseMap = new HashMap<>();
+
+        Carrier carrier = null;
+        Iterator<Carrier> carrierIterator = TelecomApi.get().getAllCarriers().iterator();
+        while (carrierIterator.hasNext() && carrier == null) {
+            Carrier c = carrierIterator.next();
+            if (c.isASubscriber(player.getName())) {
+                carrier = c;
+            }
+        }
+
+        if (carrier != null) {
+            WorldLocation l = new WorldLocation(player.getLocation());
+            CellTower bestTowerByBand = carrier.getBestTowerByBand(l);
+            parseMap.put(
+                    "bestBandTower",
+                    bestTowerByBand.getType()
+            );
+            parseMap.put(
+                    "bestBandTowerStrength",
+                    formatSignalStrength(bestTowerByBand.determineStrength(l))
+            );
+
+            CellTower bestTowerByStrength = carrier.getBestTowerBySignalStrength(l);
+            parseMap.put(
+                    "bestSignalTower",
+                    bestTowerByStrength.getType()
+            );
+            parseMap.put(
+                    "bestSignalTowerStrength",
+                    formatSignalStrength(bestTowerByStrength.determineStrength(l))
+            );
+
+            parseMap.put("carrier", carrier.getName());
+            parseMap.put("isSubscribed", "yes");
+        } else {
+            parseMap.put("bestBandTower", config.getString("lang.placeholder.noCarrier"));
+            parseMap.put("bestBandTowerStrength", config.getString("lang.placeholder.noCarrier"));
+            parseMap.put("bestSignalTower", config.getString("lang.placeholder.noCarrier"));
+            parseMap.put("bestSignalTowerStrength", config.getString("lang.placeholder.noCarrier"));
+            parseMap.put("carrier", config.getString("lang.placeholder.noCarrier"));
+            parseMap.put("isSubscribed", "no");
         }
 
         return parseMap;
