@@ -10,10 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class ParseToMap {
@@ -115,19 +112,39 @@ public class ParseToMap {
         if (carrier != null) {
             WorldLocation l = new WorldLocation(player.getLocation());
             CellTower bestTowerByBand = carrier.getBestTowerByBand(l);
+            CellTower bestTowerByStrength = carrier.getBestTowerBySignalStrength(l);
+
+            // search for a tower in the carriers peers if own carrier has no signal
+            if (bestTowerByStrength.determineStrength(l) <= 0) {
+                Iterator<String> it = carrier.getPeers();
+                while (it.hasNext()) {
+                    Carrier peer = TelecomApi.get().getCarrierById(it.next());
+                    // best band
+                    CellTower peerBestBand = peer.getBestTowerByBand(l);
+                    if (peerBestBand.determineStrength(l) > bestTowerByBand.determineStrength(l)) {
+                        bestTowerByBand = peerBestBand;
+                    }
+
+                    // best signal
+                    CellTower peerBestStrength = peer.getBestTowerBySignalStrength(l);
+                    if (peerBestStrength.determineStrength(l) > bestTowerByStrength.determineStrength(l)) {
+                        bestTowerByStrength = peerBestStrength;
+                    }
+                }
+            }
+
             parseMap.put(
                     "bestBandTower",
-                    bestTowerByBand.getType()
+                    bestTowerByStrength.getType() != null ? bestTowerByBand.getType() : config.getString("lang.placeholder.noSignal")
             );
             parseMap.put(
                     "bestBandTowerStrength",
                     formatSignalStrength(bestTowerByBand.determineStrength(l))
             );
 
-            CellTower bestTowerByStrength = carrier.getBestTowerBySignalStrength(l);
             parseMap.put(
                     "bestSignalTower",
-                    bestTowerByStrength.getType()
+                    bestTowerByStrength.getType() != null ? bestTowerByStrength.getType() : config.getString("lang.placeholder.noSignal")
             );
             parseMap.put(
                     "bestSignalTowerStrength",
@@ -136,6 +153,8 @@ public class ParseToMap {
 
             parseMap.put("carrier", carrier.getName());
             parseMap.put("isSubscribed", "yes");
+            parseMap.put("isRoaming", bestTowerByBand.getCarrier().equals(carrier.getName()) ? "no" : "yes");
+            parseMap.put("roamingCarrier", bestTowerByBand.getCarrier().equals(carrier.getName()) ? "" : bestTowerByBand.getCarrier());
         } else {
             parseMap.put("bestBandTower", config.getString("lang.placeholder.noCarrier"));
             parseMap.put("bestBandTowerStrength", config.getString("lang.placeholder.noCarrier"));
@@ -143,6 +162,8 @@ public class ParseToMap {
             parseMap.put("bestSignalTowerStrength", config.getString("lang.placeholder.noCarrier"));
             parseMap.put("carrier", config.getString("lang.placeholder.noCarrier"));
             parseMap.put("isSubscribed", "no");
+            parseMap.put("isRoaming", "no");
+            parseMap.put("roamingCarrier", "");
         }
 
         return parseMap;
@@ -166,7 +187,8 @@ public class ParseToMap {
     }
 
     private String formatSignalStrength(double signalStrength) {
-        if (signalStrength < 0.20) return ChatColor.RED + "⏺○○○○";
+        if (signalStrength <= 0) return ChatColor.RED + config.getString("lang.placeholder.noSignal");
+        else if (signalStrength < 0.20) return ChatColor.RED + "⏺○○○○";
         else if (signalStrength < 0.40) return ChatColor.YELLOW + "⏺⏺○○○";
         else if (signalStrength < 0.60) return ChatColor.GREEN + "⏺⏺⏺○○";
         else if (signalStrength < 0.80) return ChatColor.GREEN + "⏺⏺⏺⏺○";

@@ -100,4 +100,5 @@ lang:
         title: "§r - §cPeers§r:"
         data: "§r    - §c${peer}§r: Text: §7${peerTextPrice}§r, Minute: §7${peerCallPrice}"
   placeholder:
-    noCarrier: "&cNot subscribed!"
+    noCarrier: "§cNot subscribed!"
+    noSignal: "§cNo signal!"
