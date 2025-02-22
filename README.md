@@ -90,6 +90,8 @@ A simple plugin that is an extension to [dbteku's Telecom plugin](https://www.sp
   - bestSignalTowerStrength - The signal strength of the tower providing the strongest signal at the players location
   - carrier - Gives the name of the carrier the player is subscribed to
   - isSubscribed - Returns `yes` if the player is subscribed, `no` if not
+  - isRoaming - Returns `yes` if the player is currently roaming, and `no` if not
+  - roamingCarrier - Displays the name of the carrier the player is roaming at, if not roaming, it will be empty
 
 ## Using placeholder in the lang
 - Currently, PlaceholderAPI is not supported
